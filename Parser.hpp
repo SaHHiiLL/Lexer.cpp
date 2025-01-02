@@ -18,6 +18,7 @@
 // #include <iostream>
 // #include <string>
 // #include <vector>
+// #include <algorithm>
 //
 // /// # are consider comments in this json parser for example purpose
 // class JsonLexer {
@@ -169,7 +170,8 @@
             return res;                                                        \
         }                                                                      \
         void read_back() {                                                     \
-            this->read_position = this->read_position - 2;                     \
+            uint64_t new_pos = this->read_position - 2;                        \
+            this->read_position = (0 < new_pos) ? new_pos : 0;                 \
             this->read_next();                                                 \
         }                                                                      \
         bool is_eof() { return this->curr_char == 0; }                         \
