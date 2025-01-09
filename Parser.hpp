@@ -114,6 +114,7 @@
 ///
 ///
 
+#include <cctype>
 #define LEXER_IMPL(TokenTypeName)                                              \
     struct Lexer {                                                             \
         struct Token {                                                         \
@@ -152,6 +153,22 @@
             return this->curr_char >= '0' && this->curr_char <= '9';           \
         }                                                                      \
         char curr() { return this->curr_char; }                                \
+        std ::string read_until(char terminator) {                             \
+            std ::string res;                                                  \
+            while (this->curr_char != terminator) {                            \
+                res.push_back(this->curr_char);                                \
+                this->read_next();                                             \
+            }                                                                  \
+            return res;                                                        \
+        }                                                                      \
+        std ::string read_alphanumeric() {                                     \
+            std ::string res;                                                  \
+            while (this->is_number() || this->is_letter()) {                   \
+                res.push_back(this->curr_char);                                \
+                this->read_next();                                             \
+            }                                                                  \
+            return res;                                                        \
+        }                                                                      \
         std ::string read_number() {                                           \
             std ::string res;                                                  \
             while (this->is_number()) {                                        \
@@ -178,6 +195,14 @@
         void skip_line() {                                                     \
             while (this->curr_char != '\n')                                    \
                 this->read_next();                                             \
+        }                                                                      \
+        std::string read_to_space() {                                          \
+            std::string res;                                                   \
+            while (!std::isspace(this->curr_char)) {                           \
+                res.push_back(this->input[this->position]);                    \
+                this->read_next();                                             \
+            }                                                                  \
+            return res;                                                        \
         }                                                                      \
         void skip_whitespace() {                                               \
             while (std ::isspace(this->curr_char)) {                           \
