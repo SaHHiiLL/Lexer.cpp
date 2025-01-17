@@ -155,7 +155,7 @@
         char curr() { return this->curr_char; }                                \
         std ::string read_until(char terminator) {                             \
             std ::string res;                                                  \
-            while (this->curr_char != terminator) {                            \
+            while (this->curr_char != terminator && this->curr_char != 0) {    \
                 res.push_back(this->curr_char);                                \
                 this->read_next();                                             \
             }                                                                  \
@@ -198,7 +198,7 @@
         }                                                                      \
         std::string read_to_space() {                                          \
             std::string res;                                                   \
-            while (!std::isspace(this->curr_char)) {                           \
+            while (!std::isspace(this->curr_char) && this->curr_char != 0) {   \
                 res.push_back(this->input[this->position]);                    \
                 this->read_next();                                             \
             }                                                                  \
