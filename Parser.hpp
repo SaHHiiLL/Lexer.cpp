@@ -127,11 +127,9 @@
         uint64_t read_position;                                                \
         uint64_t position;                                                     \
         std ::vector<char> input;                                              \
-        Lexer(std ::string input) {                                            \
+        Lexer(std ::string input)                                              \
+            : curr_char(input[0]), read_position(0), position(0) {             \
             this->input = std ::vector<char>(input.begin(), input.end());      \
-            this->curr_char = input[0];                                        \
-            this->read_position = 0;                                           \
-            this->position = 0;                                                \
         }                                                                      \
         Lexer() = default;                                                     \
         void set_input(std ::string input) {                                   \
