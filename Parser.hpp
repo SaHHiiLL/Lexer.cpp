@@ -114,24 +114,21 @@
 ///
 ///
 
-#include <cctype>
 #define LEXER_IMPL(TokenTypeName)                                              \
     struct Lexer {                                                             \
         struct Token {                                                         \
-            TokenTypeName type;                                                \
+            TokenType type;                                                    \
             std ::string literal;                                              \
         };                                                                     \
                                                                                \
     public:                                                                    \
         char curr_char;                                                        \
-        uint64_t read_position;                                                \
-        uint64_t position;                                                     \
+        uint64_t position{0};                                                  \
+        uint64_t read_position{position + 1};                                  \
         std ::vector<char> input;                                              \
-        Lexer(std ::string input)                                              \
-            : curr_char(input[0]), read_position(0), position(0) {             \
+        explicit Lexer(const std ::string &input) : curr_char(input[0]) {      \
             this->input = std ::vector<char>(input.begin(), input.end());      \
         }                                                                      \
-        Lexer() = default;                                                     \
         void set_input(std ::string input) {                                   \
             this->input = std ::vector<char>(input.begin(), input.end());      \
         }                                                                      \
@@ -143,15 +140,15 @@
             }                                                                  \
             this->position = this->read_position++;                            \
         }                                                                      \
-        bool is_letter() {                                                     \
+        bool is_letter() const {                                               \
             return (this->curr_char >= 'A' && this->curr_char <= 'Z') ||       \
                    (this->curr_char >= 'a' && this->curr_char <= 'z');         \
         }                                                                      \
-        bool is_number() {                                                     \
+        bool is_number() const {                                               \
             return this->curr_char >= '0' && this->curr_char <= '9';           \
         }                                                                      \
-        char curr() { return this->curr_char; }                                \
-        std ::string read_until(char terminator) {                             \
+        char curr() const { return this->curr_char; }                          \
+        std ::string read_until(const char terminator) {                       \
             std ::string res;                                                  \
             while (this->curr_char != terminator && this->curr_char != 0) {    \
                 res.push_back(this->curr_char);                                \
@@ -176,7 +173,7 @@
             return res;                                                        \
         }                                                                      \
         std ::string read_identifier() {                                       \
-            std::string res;                                                   \
+            std ::string res;                                                  \
             while (this->is_letter()) {                                        \
                 res.push_back(this->input[this->position]);                    \
                 this->read_next();                                             \
@@ -185,18 +182,18 @@
             return res;                                                        \
         }                                                                      \
         void read_back() {                                                     \
-            uint64_t new_pos = this->read_position - 2;                        \
+            const uint64_t new_pos = this->read_position - 2;                  \
             this->read_position = (0 < new_pos) ? new_pos : 0;                 \
             this->read_next();                                                 \
         }                                                                      \
-        bool is_eof() { return this->curr_char == 0; }                         \
+        bool is_eof() const { return this->curr_char == 0; }                   \
         void skip_line() {                                                     \
             while (this->curr_char != '\n')                                    \
                 this->read_next();                                             \
         }                                                                      \
-        std::string read_to_space() {                                          \
-            std::string res;                                                   \
-            while (!std::isspace(this->curr_char) && this->curr_char != 0) {   \
+        std ::string read_to_space() {                                         \
+            std ::string res;                                                  \
+            while (!std ::isspace(this->curr_char) && this->curr_char != 0) {  \
                 res.push_back(this->input[this->position]);                    \
                 this->read_next();                                             \
             }                                                                  \
